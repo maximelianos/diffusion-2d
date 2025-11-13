@@ -1,0 +1,61 @@
+# Hydra configuration for diffusion model training
+
+# Dataset parameters
+dataset:
+  n_samples: 5000
+  noise: 0.05
+  random_state: 42
+  normalize: true
+
+# DataLoader parameters
+dataloader:
+  batch_size: 128
+  shuffle: true
+  num_workers: 2
+
+# Diffusion parameters
+diffusion:
+  num_timesteps: 1000
+  beta_start: 0.0001
+  beta_end: 0.02
+
+# Model parameters
+model:
+  data_dim: 2
+  hidden_dim: 32
+  time_embed_dim: 16
+  num_layers: 2
+
+# Training parameters
+training:
+  num_steps: 500000
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  device: "cuda"  # or "cpu"
+  seed: 42
+
+  # Checkpoint settings
+  checkpoint_dir: "checkpoints"
+  save_every: 50000  # save every N steps
+
+  # Loss plotting
+  plot_dir: "loss"
+  plot_every: 50000  # plot every N steps
+
+# Inference parameters
+inference:
+  checkpoint_path: "checkpoints/model_final.pt"
+  n_samples: 500
+  num_inference_steps: 100
+  rerun_app_id: "backward_diffusion_2d"
+
+# disable creating outputs/ directory
+defaults:  
+  - _self_  
+  - override hydra/hydra_logging: disabled  
+  - override hydra/job_logging: disabled  
+  
+hydra:  
+  output_subdir: null  
+  run:  
+    dir: .

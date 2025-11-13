@@ -1,0 +1,25 @@
+# Ignore Tex files
+*.out
+*.log
+*.aux
+*.gz
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info
+
+# IDE settings
+.ipynb_checkpoints/
+.idea
+.vscode
+.serena
+
+# MacOS files
+.DS_Store
+
+plot/
+data/
+papers/
+outputs/
