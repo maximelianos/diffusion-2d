@@ -18,12 +18,12 @@ from loader import create_dataloader
 class DiffusionTrainer:
     """Trainer for diffusion model."""
 
-    def __init__(self, config: dict):
+    def __init__(self, config):
         """
         Initialize trainer with configuration.
 
         Args:
-            config: Configuration dictionary
+            config (dict): Configuration dictionary
         """
         self.config = config
 
@@ -99,16 +99,16 @@ class DiffusionTrainer:
         self.sqrt_alpha_bars = torch.sqrt(self.alpha_bars)
         self.sqrt_one_minus_alpha_bars = torch.sqrt(1.0 - self.alpha_bars)
 
-    def forward_diffusion(self, x0: torch.Tensor, t: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    def forward_diffusion(self, x0, t):
         """
         Apply forward diffusion: q(x_t | x_0).
 
         Args:
-            x0: Clean data of shape (batch_size, data_dim)
-            t: Timesteps of shape (batch_size,)
+            x0 (torch.Tensor): Clean data of shape (batch_size, data_dim)
+            t (torch.Tensor): Timesteps of shape (batch_size,)
 
         Returns:
-            Tuple of (noisy_data, noise)
+            tuple: (noisy_data, noise) both torch.Tensor
         """
         # Sample noise
         noise = torch.randn_like(x0)
@@ -122,15 +122,15 @@ class DiffusionTrainer:
 
         return x_t, noise
 
-    def train_step(self, batch: torch.Tensor) -> float:
+    def train_step(self, batch):
         """
         Perform single training step.
 
         Args:
-            batch: Batch of clean data
+            batch (torch.Tensor): Batch of clean data
 
         Returns:
-            Loss value
+            float: Loss value
         """
         batch = batch.to(self.device)
         batch_size = batch.shape[0]
@@ -159,13 +159,16 @@ class DiffusionTrainer:
 
         return loss.item()
 
-    def save_checkpoint(self, step: int, filename: str = None):
+    def save_checkpoint(self, step, filename=None):
         """
         Save model checkpoint.
 
         Args:
-            step: Current training step
-            filename: Optional custom filename
+            step (int): Current training step
+            filename (str, optional): Optional custom filename
+
+        Returns:
+            None
         """
         if filename is None:
             filename = f"model_step_{step}.pt"
@@ -184,12 +187,15 @@ class DiffusionTrainer:
         torch.save(checkpoint, checkpoint_path)
         print(f"  ✓ Saved checkpoint to {checkpoint_path}")
 
-    def plot_losses(self, step: int):
+    def plot_losses(self, step):
         """
         Plot and save loss curves.
 
         Args:
-            step: Current training step
+            step (int): Current training step
+
+        Returns:
+            None
         """
         fig, ax = plt.subplots(1, 1, figsize=(12, 6))
 
@@ -276,12 +282,15 @@ class DiffusionTrainer:
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
-def main(cfg: DictConfig):
+def main(cfg):
     """
     Main training function with Hydra configuration.
 
     Args:
-        cfg: Hydra configuration object
+        cfg (DictConfig): Hydra configuration object
+
+    Returns:
+        None
     """
     # Convert OmegaConf to dict for easier handling
     config = OmegaConf.to_container(cfg, resolve=True)

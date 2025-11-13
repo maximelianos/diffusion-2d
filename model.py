@@ -8,19 +8,23 @@ import numpy as np
 class SinusoidalPositionEmbeddings(nn.Module):
     """Sinusoidal position embeddings for timestep encoding."""
 
-    def __init__(self, dim: int):
+    def __init__(self, dim):
+        """
+        Args:
+            dim (int): Embedding dimension
+        """
         super().__init__()
         self.dim = dim
 
-    def forward(self, time: torch.Tensor) -> torch.Tensor:
+    def forward(self, time):
         """
         Create sinusoidal embeddings for timesteps.
 
         Args:
-            time: Tensor of shape (batch_size,) with timestep values
+            time (torch.Tensor): Tensor of shape (batch_size,) with timestep values
 
         Returns:
-            Embeddings of shape (batch_size, dim)
+            torch.Tensor: Embeddings of shape (batch_size, dim)
         """
         device = time.device
         half_dim = self.dim // 2
@@ -36,19 +40,19 @@ class NoisePredictor(nn.Module):
 
     def __init__(
         self,
-        data_dim: int = 2,
-        hidden_dim: int = 128,
-        time_embed_dim: int = 32,
-        num_layers: int = 3
+        data_dim=2,
+        hidden_dim=128,
+        time_embed_dim=32,
+        num_layers=3
     ):
         """
         Initialize noise prediction network.
 
         Args:
-            data_dim: Dimension of input data (2 for 2D points)
-            hidden_dim: Hidden layer dimension
-            time_embed_dim: Timestep embedding dimension
-            num_layers: Number of hidden layers
+            data_dim (int): Dimension of input data (2 for 2D points)
+            hidden_dim (int): Hidden layer dimension
+            time_embed_dim (int): Timestep embedding dimension
+            num_layers (int): Number of hidden layers
         """
         super().__init__()
 
@@ -81,16 +85,16 @@ class NoisePredictor(nn.Module):
 
         self.net = nn.Sequential(*layers)
 
-    def forward(self, x_t: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
+    def forward(self, x_t, t):
         """
         Predict noise epsilon from noisy data x_t at timestep t.
 
         Args:
-            x_t: Noisy data of shape (batch_size, data_dim)
-            t: Timesteps of shape (batch_size,) with values in [0, num_timesteps-1]
+            x_t (torch.Tensor): Noisy data of shape (batch_size, data_dim)
+            t (torch.Tensor): Timesteps of shape (batch_size,) with values in [0, num_timesteps-1]
 
         Returns:
-            Predicted noise of shape (batch_size, data_dim)
+            torch.Tensor: Predicted noise of shape (batch_size, data_dim)
         """
         # Encode timestep
         t_emb = self.time_mlp(t)

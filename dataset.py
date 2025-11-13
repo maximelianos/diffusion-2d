@@ -6,30 +6,33 @@ from sklearn.datasets import make_moons
 from pathlib import Path
 
 
-def create_moon_dataset(n_samples: int = 1000, noise: float = 0.05, random_state: int = 42) -> np.ndarray:
+def create_moon_dataset(n_samples=1000, noise=0.05, random_state=42):
     """
     Create 2D moon dataset.
 
     Args:
-        n_samples: Number of samples to generate
-        noise: Standard deviation of Gaussian noise added to the data
-        random_state: Random seed for reproducibility
+        n_samples (int): Number of samples to generate
+        noise (float): Standard deviation of Gaussian noise added to the data
+        random_state (int): Random seed for reproducibility
 
     Returns:
-        Array of shape (n_samples, 2) containing 2D points
+        np.ndarray: Array of shape (n_samples, 2) containing 2D points
     """
     X, _ = make_moons(n_samples=n_samples, noise=noise, random_state=random_state)
     return X.astype(np.float32)
 
 
-def save_dataset_plot(data: np.ndarray, save_path: str = "dataset.png", title: str = "Moon Dataset") -> None:
+def save_dataset_plot(data, save_path="dataset.png", title="Moon Dataset"):
     """
     Save a 2D scatter plot of the dataset.
 
     Args:
-        data: Array of shape (n_samples, 2) containing 2D points
-        save_path: Path to save the plot
-        title: Title for the plot
+        data (np.ndarray): Array of shape (n_samples, 2) containing 2D points
+        save_path (str): Path to save the plot
+        title (str): Title for the plot
+
+    Returns:
+        None
     """
     plt.figure(figsize=(8, 8))
     plt.scatter(data[:, 0], data[:, 1], alpha=0.6, s=20)
@@ -46,15 +49,16 @@ def save_dataset_plot(data: np.ndarray, save_path: str = "dataset.png", title: s
     print(f"Saved plot to {save_path}")
 
 
-def normalize_data(data: np.ndarray) -> tuple[np.ndarray, dict]:
+def normalize_data(data):
     """
     Normalize data to [-1, 1] range.
 
     Args:
-        data: Array of shape (n_samples, 2)
+        data (np.ndarray): Array of shape (n_samples, 2)
 
     Returns:
-        Tuple of (normalized_data, normalization_params)
+        tuple: (normalized_data, normalization_params) where normalized_data is np.ndarray
+               and normalization_params is dict
     """
     min_vals = data.min(axis=0)
     max_vals = data.max(axis=0)
@@ -70,16 +74,16 @@ def normalize_data(data: np.ndarray) -> tuple[np.ndarray, dict]:
     return normalized, params
 
 
-def denormalize_data(data: np.ndarray, params: dict) -> np.ndarray:
+def denormalize_data(data, params):
     """
     Denormalize data back to original range.
 
     Args:
-        data: Normalized array of shape (n_samples, 2)
-        params: Normalization parameters from normalize_data
+        data (np.ndarray): Normalized array of shape (n_samples, 2)
+        params (dict): Normalization parameters from normalize_data
 
     Returns:
-        Denormalized data
+        np.ndarray: Denormalized data
     """
     return (data + 1) / 2 * (params['max'] - params['min']) + params['min']
 

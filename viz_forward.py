@@ -2,35 +2,40 @@
 
 import rerun as rr
 import numpy as np
-from typing import Optional
 import hydra
 from omegaconf import DictConfig
 
 
-def init_rerun(app_name: str = "diffusion_2d") -> None:
+def init_rerun(app_name="diffusion_2d"):
     """
     Initialize rerun recording.
 
     Args:
-        app_name: Name of the rerun application
+        app_name (str): Name of the rerun application
+
+    Returns:
+        None
     """
     rr.init(app_name, spawn=True)
 
 
 def log_points(
-    points: np.ndarray,
-    entity_path: str = "points",
-    colors: Optional[np.ndarray] = None,
-    radii: Optional[float] = None
-) -> None:
+    points,
+    entity_path="points",
+    colors=None,
+    radii=None
+):
     """
     Log 2D points to rerun.
 
     Args:
-        points: Array of shape (n_points, 2)
-        entity_path: Rerun entity path
-        colors: Optional colors for points, shape (n_points, 3) or (n_points, 4)
-        radii: Optional radius for points
+        points (np.ndarray): Array of shape (n_points, 2)
+        entity_path (str): Rerun entity path
+        colors (np.ndarray, optional): Optional colors for points, shape (n_points, 3) or (n_points, 4)
+        radii (float, optional): Optional radius for points
+
+    Returns:
+        None
     """
     rr.log(
         entity_path,
@@ -43,19 +48,22 @@ def log_points(
 
 
 def log_forward_diffusion(
-    x0: np.ndarray,
-    noisy_trajectory: np.ndarray,
-    entity_base: str = "forward_diffusion",
-    track_samples: Optional[list] = None
-) -> None:
+    x0,
+    noisy_trajectory,
+    entity_base="forward_diffusion",
+    track_samples=None
+):
     """
     Log forward diffusion process (adding noise) with optional individual sample tracking.
 
     Args:
-        x0: Original clean data of shape (num_samples, 2)
-        noisy_trajectory: Array of shape (num_timesteps, num_samples, 2)
-        entity_base: Base entity path
-        track_samples: Optional list of sample indices to track individually
+        x0 (np.ndarray): Original clean data of shape (num_samples, 2)
+        noisy_trajectory (np.ndarray): Array of shape (num_timesteps, num_samples, 2)
+        entity_base (str): Base entity path
+        track_samples (list, optional): Optional list of sample indices to track individually
+
+    Returns:
+        None
     """
     num_timesteps, num_samples, _ = noisy_trajectory.shape
 
@@ -116,12 +124,15 @@ def log_forward_diffusion(
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
-def main(cfg: DictConfig):
+def main(cfg):
     """
     Main visualization function with Hydra configuration.
 
     Args:
-        cfg: Hydra configuration object
+        cfg (DictConfig): Hydra configuration object
+
+    Returns:
+        None
     """
     from dataset import create_moon_dataset
     from diffusion import DiffusionModel

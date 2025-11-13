@@ -13,13 +13,13 @@ from model import NoisePredictor
 class BackwardDiffusion:
     """Backward diffusion sampler using trained model."""
 
-    def __init__(self, checkpoint_path: str, device: str = "cuda"):
+    def __init__(self, checkpoint_path, device="cuda"):
         """
         Initialize backward diffusion sampler.
 
         Args:
-            checkpoint_path: Path to trained model checkpoint
-            device: Device to run inference on
+            checkpoint_path (str): Path to trained model checkpoint
+            device (str): Device to run inference on
         """
         self.device = torch.device(device if torch.cuda.is_available() else "cpu")
         print(f"Using device: {self.device}")
@@ -75,16 +75,16 @@ class BackwardDiffusion:
         self.sqrt_one_minus_alpha_bars = torch.sqrt(1.0 - self.alpha_bars)
 
     @torch.no_grad()
-    def backward_step(self, x_t: torch.Tensor, t: int) -> torch.Tensor:
+    def backward_step(self, x_t, t):
         """
         Single backward diffusion step: p(x_{t-1} | x_t).
 
         Args:
-            x_t: Noisy data at timestep t, shape (batch_size, data_dim)
-            t: Current timestep
+            x_t (torch.Tensor): Noisy data at timestep t, shape (batch_size, data_dim)
+            t (int): Current timestep
 
         Returns:
-            x_{t-1}: Less noisy data at timestep t-1
+            torch.Tensor: x_{t-1} - Less noisy data at timestep t-1
         """
         batch_size = x_t.shape[0]
 
@@ -117,16 +117,16 @@ class BackwardDiffusion:
         return x_t_minus_1
 
     @torch.no_grad()
-    def sample(self, n_samples: int, num_steps: int = None) -> np.ndarray:
+    def sample(self, n_samples, num_steps=None):
         """
         Generate samples using backward diffusion.
 
         Args:
-            n_samples: Number of samples to generate
-            num_steps: Number of backward steps (default: num_timesteps)
+            n_samples (int): Number of samples to generate
+            num_steps (int, optional): Number of backward steps (default: num_timesteps)
 
         Returns:
-            Trajectory of shape (num_steps+1, n_samples, data_dim)
+            np.ndarray: Trajectory of shape (num_steps+1, n_samples, data_dim)
         """
         if num_steps is None:
             num_steps = self.config['diffusion']['num_timesteps']
@@ -156,41 +156,47 @@ class BackwardDiffusion:
 
         return trajectory
 
-    def _denormalize(self, data: np.ndarray) -> np.ndarray:
+    def _denormalize(self, data):
         """
         Denormalize data back to original range.
 
         Args:
-            data: Normalized data
+            data (np.ndarray): Normalized data
 
         Returns:
-            Denormalized data
+            np.ndarray: Denormalized data
         """
         min_vals = self.norm_params['min']
         max_vals = self.norm_params['max']
         return (data + 1) / 2 * (max_vals - min_vals) + min_vals
 
 
-def init_rerun(app_name: str = "backward_diffusion_2d") -> None:
+def init_rerun(app_name="backward_diffusion_2d"):
     """
     Initialize rerun recording.
 
     Args:
-        app_name: Name of the rerun application
+        app_name (str): Name of the rerun application
+
+    Returns:
+        None
     """
     rr.init(app_name, spawn=True)
 
 
 def log_backward_diffusion(
-    trajectory: np.ndarray,
-    entity_base: str = "backward_diffusion"
-) -> None:
+    trajectory,
+    entity_base="backward_diffusion"
+):
     """
     Log backward diffusion process (denoising) to rerun.
 
     Args:
-        trajectory: Array of shape (num_timesteps+1, num_samples, 2)
-        entity_base: Base entity path
+        trajectory (np.ndarray): Array of shape (num_timesteps+1, num_samples, 2)
+        entity_base (str): Base entity path
+
+    Returns:
+        None
     """
     num_timesteps, num_samples, _ = trajectory.shape
 

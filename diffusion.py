@@ -1,20 +1,19 @@
 """Forward diffusion model for 2D point space."""
 
 import numpy as np
-from typing import Optional, Tuple
 
 
 class DiffusionModel:
     """Forward diffusion model - adds noise progressively to data."""
 
-    def __init__(self, num_timesteps: int = 1000, beta_start: float = 0.0001, beta_end: float = 0.02):
+    def __init__(self, num_timesteps=1000, beta_start=0.0001, beta_end=0.02):
         """
         Initialize diffusion model with linear beta schedule.
 
         Args:
-            num_timesteps: Number of diffusion timesteps
-            beta_start: Starting noise variance
-            beta_end: Ending noise variance
+            num_timesteps (int): Number of diffusion timesteps
+            beta_start (float): Starting noise variance
+            beta_end (float): Ending noise variance
         """
         self.num_timesteps = num_timesteps
 
@@ -27,19 +26,19 @@ class DiffusionModel:
         self.sqrt_alpha_bars = np.sqrt(self.alpha_bars)
         self.sqrt_one_minus_alpha_bars = np.sqrt(1.0 - self.alpha_bars)
 
-    def forward_diffusion(self, x0: np.ndarray, t: int, noise: Optional[np.ndarray] = None) -> Tuple[np.ndarray, np.ndarray]:
+    def forward_diffusion(self, x0, t, noise=None):
         """
         Forward diffusion process: add noise to data.
 
         q(x_t | x_0) = N(x_t; sqrt(alpha_bar_t) * x_0, (1 - alpha_bar_t) * I)
 
         Args:
-            x0: Original data of shape (batch_size, dim)
-            t: Timestep (0 to num_timesteps-1)
-            noise: Optional pre-generated noise
+            x0 (np.ndarray): Original data of shape (batch_size, dim)
+            t (int): Timestep (0 to num_timesteps-1)
+            noise (np.ndarray, optional): Optional pre-generated noise
 
         Returns:
-            Tuple of (noisy_data, noise_used)
+            tuple: (noisy_data, noise_used) both np.ndarray
         """
         if noise is None:
             noise = np.random.randn(*x0.shape).astype(np.float32)
@@ -52,16 +51,16 @@ class DiffusionModel:
 
         return noisy_data, noise
 
-    def add_noise_trajectory(self, x0: np.ndarray, timesteps: Optional[np.ndarray] = None) -> np.ndarray:
+    def add_noise_trajectory(self, x0, timesteps=None):
         """
         Generate trajectory of forward diffusion process.
 
         Args:
-            x0: Original data of shape (batch_size, dim)
-            timesteps: Array of timesteps to sample, or None for all timesteps
+            x0 (np.ndarray): Original data of shape (batch_size, dim)
+            timesteps (np.ndarray, optional): Array of timesteps to sample, or None for all timesteps
 
         Returns:
-            Array of shape (num_timesteps, batch_size, dim) with noisy versions
+            np.ndarray: Array of shape (num_timesteps, batch_size, dim) with noisy versions
         """
         if timesteps is None:
             timesteps = np.arange(self.num_timesteps)

@@ -3,7 +3,12 @@ import numpy as np
 from pathlib import Path
 
 class LossLogger:
-    def __init__(self, path: str, overwrite: bool = False):
+    def __init__(self, path, overwrite=False):
+        """
+        Args:
+            path (str): Path to h5 file for storing loss data
+            overwrite (bool): If True, overwrite existing file
+        """
         self.path = Path(path)
         self.data = {}  # In-memory storage: {key: {'t': [times], 'values': [values]}}
         
@@ -69,15 +74,15 @@ class LossLogger:
                 group.create_dataset('t', data=np.array(data['t']))
                 group.create_dataset('values', data=np.array(data['values']))
     
-    def get(self, key: str):
+    def get(self, key):
         """
         Get time array and loss values array.
-        
+
         Arguments:
             key (str): name of the loss
-        
+
         Returns:
-            tuple[np.ndarray, np.ndarray]
+            tuple: (times, values) both np.ndarray
         """
         if key not in self.data:
             raise KeyError(f"Key '{key}' not found in loss data")

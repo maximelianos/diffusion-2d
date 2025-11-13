@@ -36,8 +36,16 @@ def plot_training_curves(train_log, args):
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
-def main(args : DictConfig):
-    """Main execution function"""
+def main(args):
+    """
+    Main execution function
+
+    Args:
+        args (DictConfig): Hydra configuration object
+
+    Returns:
+        None
+    """
     print("=== Transformer Autoencoder for Neural Time Series ===")
 
     # Load train log
