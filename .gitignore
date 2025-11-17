@@ -23,3 +23,5 @@ plot/
 data/
 papers/
 outputs/
+
+checkpoints/

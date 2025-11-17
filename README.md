@@ -2,6 +2,28 @@
 
 Visualization of forward diffusion (noise addition) process on 2D point clouds using the sklearn moon dataset with interactive rerun visualization.
 
+* 2D moon dataset in dataset.py
+* trainable backward diffusion model
+* pytorch dataloader in loader.py
+* diffusion.py for forward process
+
+Linear model for noise prediction epsilon_{theta}(x_t, t) in model.py.
+
+Training loop in train.py. Save model checkpoints, plot loss using scripts in loss directory.
+
+Hydra for configuration - conf/config.py contains necessary parameters. Configuration is loaded only in the main function and arguments are passed as dictionary to other classes and functions.
+
+After training, the backward process is visualized in rerun - script inference.py. It loads the checkpoint from disk.
+
+
+
+
+
+
+
+
+
+
 ## Project Structure
 
 ```
